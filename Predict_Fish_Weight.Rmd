@@ -86,12 +86,21 @@ subsets(PerchModel1automate,statistic="adjr2",legend="bottom",main="Adjusted R^2
 After running this code, I found the best single element regression model (Height), the best 2 element regression models (Height and Width), and I was also able to get the best 3, 4 and 5 elements regression models. Statistically, how i judged the element regression models is by checking the adjusted R square values.
 
 ## Pike
+
 ```{r}
-PikeModel1 <- lm(Weight~ .,data=Pike)
-summary.lm(PikeModel1)
+Pike <- filter(fish, Species == "Pike")
+Pike <- select(Pike, -Species) 
 ```
 
+
 ### Best Models
+
+```{r}
+PikeModel1 <- lm(Weight~ .,data=Pike)
+summary.lm(PikeModel1) 
+```
+
+### Best Two regressor Models
 
 ```{r}
 library(leaps)
@@ -109,16 +118,42 @@ library(car)
 subsets(PikeModel1automate,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
 ```
 
-After running the code for the Pike, I was able to get that the best 2 regressor models were length 1 and Length 3. However, the best regressor models were Length 1, 2 and 3 along with the height and Width which is the complete model. All of the models were judged based on the adjusted R square values. 
+After running the code for the Pike, I was able to get that the best 2 regressor models were length 1 and Length 3. However, the best regressor models were Length 1, 2 and 3 along with the height and Width which is the complete model. All of the models were judged based on the adjusted R square values.
 
 ## Roach
 
-
+```{r}
+Roach <- filter(fish, Species == "Roach")
+Roach <- select(Roach, -Species) 
+```
 
 ### Best Models
 
+```{r}
+RoachModel1 <- lm(Weight~ .,data=Roach)
+summary.lm(RoachModel1) 
+```
+
 ### Best Two regressor model
+
+```{r}
+library(leaps)
+RoachModel1automate <-
+    regsubsets(Weight ~ .,
+               data = Roach,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.Roach <- summary(RoachModel1automate)
+as.data.frame(summary.Roach$outmat)
+library(car)
+subsets(RoachModel1automate,statistic="adjr2",legend="bottomleft",main="Adjusted R^2")
+```
+
+After running this code, i found the single best element regression model (Height), the best 2 element regression models (Height and Width), and I was able to get 3,4 and 5 elements regression models, Statistically, how I judged the element regression models is by checking the adjusted R square values.
 
 ## Final Summary Statements
 
-
+In this assignment, I was able to compare regressor models for different types of fishes. For each fish I estimated the weight factor and compared the regressor models using the adjusted R square models. For the Perch, the best 2 element models were height and width. For Pike, the best 2 models were length 1 and 3. however, the best regressor models and the best models were length 1, 2 and 3 along with height and width. Finally for the Roach, the best 2 regressor models and the best models in general were length 3 and width. All models were judged by checking the adjusted R square values.
